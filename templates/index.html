@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>𝗢𝗪𝗡𝟯𝗥 𝗥𝟬𝗪𝟯𝗗𝗬 𝗞𝗜𝗡𝗚 - 𝗨𝗜𝗗 𝗙𝗜𝗜𝗡𝗗𝗘𝗥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://i.ibb.co/84jMX32R/converted-image.png') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px 20px;
+      border-radius: 15px;
+      border: 2px solid white;
+      box-shadow: 0 0 15px white;
+      position: relative;
+      z-index: 10;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #00ffff;
+      animation: moveUpDown 2s infinite;
+      text-shadow: 0 0 10px cyan;
+      margin-bottom: 30px;
+    }
+
+    @keyframes moveUpDown {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid white;
+      background: black;
+      color: white;
+      font-size: 16px;
+      animation: glowInput 2s infinite alternate;
+      box-shadow: 0 0 8px #00ffff;
+    }
+
+    @keyframes glowInput {
+      from { box-shadow: 0 0 5px white; }
+      to { box-shadow: 0 0 12px cyan; }
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 15px;
+      border: 2px solid white;
+      background: blue;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      animation: glowBtn 2s infinite alternate;
+    }
+
+    button:hover {
+      background: darkblue;
+    }
+
+    @keyframes glowBtn {
+      from { box-shadow: 0 0 5px white; }
+      to { box-shadow: 0 0 15px blue; }
+    }
+
+    .result-item {
+      margin-top: 15px;
+      padding: 10px;
+      background: black;
+      border: 2px solid white;
+      border-radius: 10px;
+      animation: glowResult 2s infinite alternate;
+    }
+
+    @keyframes glowResult {
+      from { box-shadow: 0 0 5px white; }
+      to { box-shadow: 0 0 15px magenta; }
+    }
+
+    .result-item strong {
+      color: #00ffff;
+      font-size: 17px;
+    }
+
+    .footer-box {
+      margin-top: 30px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid white;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      animation: glowFooter 2s infinite alternate;
+    }
+
+    @keyframes glowFooter {
+      from { box-shadow: 0 0 5px white; }
+      to { box-shadow: 0 0 15px pink; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Rain Effect Canvas -->
+  <canvas id="rain-canvas" style="position: fixed; top: 0; left: 0; z-index: 1;"></canvas>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="title">𝗥𝟬𝗪𝟯𝗗𝗫 𝗞||𝗡𝗚</div>
+    <form method="POST">
+      <input type="text" name="token" placeholder="Enter Access Token" required>
+      <button type="submit">Submit</button>
+    </form>
+
+    {% if groups %}
+      {% for group in groups %}
+        <div class="result-item">
+          <strong>{{ group.name }}</strong><br>
+          UID: {{ group.id }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if error %}
+      <div class="result-item" style="color: red;">{{ error }}</div>
+    {% endif %}
+
+    <div class="footer-box">𝗧𝗛𝟯𝗪 𝗢𝗪𝗡𝟯𝗥 𝗥𝟬𝗪𝟯𝗗𝗬 𝗞||𝗡𝗚 𝗛𝟯𝗥𝟯</div>
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bg-music" loop>
+    <source src="/static/bg.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Music Play Trigger Script -->
+  <script>
+    function playMusicOnce() {
+      const music = document.getElementById("bg-music");
+      if (music && music.paused) {
+        music.play().catch(e => {});
+      }
+      document.removeEventListener("click", playMusicOnce);
+      document.removeEventListener("touchstart", playMusicOnce);
+    }
+
+    document.addEventListener("click", playMusicOnce);
+    document.addEventListener("touchstart", playMusicOnce);
+  </script>
+
+  <!-- Rain Animation Script -->
+  <script>
+    const canvas = document.getElementById("rain-canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const rainDrops = [];
+
+    for (let i = 0; i < 300; i++) {
+      rainDrops.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: Math.random() * 20 + 10,
+        speed: Math.random() * 4 + 4,
+      });
+    }
+
+    function drawRain() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(173,216,230,0.6)";
+      ctx.lineWidth = 1.2;
+
+      rainDrops.forEach(drop => {
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+
+        drop.y += drop.speed;
+        if (drop.y > canvas.height) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * canvas.width;
+        }
+      });
+
+      requestAnimationFrame(drawRain);
+    }
+
+    drawRain();
+  </script>
+
+</body>
+</html>
